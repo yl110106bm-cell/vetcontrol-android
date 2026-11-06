@@ -1,0 +1,47 @@
+VETCONTROL - INVENTARIO Y VENTAS PARA ANDROID
+=============================================
+Esta es una aplicación web progresiva (PWA), no un archivo APK.
+No requiere Python en el teléfono. Los datos se guardan localmente
+mediante IndexedDB y se pueden respaldar como JSON.
+
+PRUEBA RÁPIDA EN COMPUTADORA
+1. Extrae el ZIP completo.
+2. Abre la carpeta y ejecuta index.html en Chrome o Edge.
+3. Puedes registrar productos y ventas. La instalación como app y el
+   escáner de cámara requieren HTTPS (no funcionan desde file://).
+
+PUBLICAR GRATIS CON GITHUB PAGES (PARA INSTALAR EN ANDROID)
+1. Abre https://github.com y crea/inicia sesión en tu cuenta.
+2. Crea un repositorio nuevo, por ejemplo vetcontrol-android.
+   Recomendado: Private si no quieres publicar código; revisa si Pages
+   está disponible para tu tipo de cuenta. Para el método gratuito más
+   sencillo, utiliza un repositorio Public. NO subas datos reales.
+3. En el repositorio, selecciona Add file > Upload files.
+4. Sube TODO el contenido de la carpeta veterinaria_android (los 5
+   archivos principales y la carpeta icons con 2 PNG); NO el ZIP.
+5. Confirma los cambios (Commit changes).
+6. En Settings > Pages > Build and deployment:
+   Source = Deploy from a branch, Branch = main, folder = /(root).
+   Pulsa Save. GitHub mostrará la URL HTTPS del sitio.
+7. En Android, abre esa URL con Google Chrome.
+8. En Chrome toca el menú de tres puntos (⋮) y elige
+   «Instalar aplicación» o «Agregar a pantalla principal».
+9. Abre VetControl desde su icono. Después de cargarla inicialmente,
+   podrá funcionar sin conexión para inventario y ventas.
+
+IMPORTANTE SOBRE LOS DATOS
+- Cada navegador/dispositivo tiene su PROPIA base local; no sincroniza.
+- Si borras datos de sitios de Chrome o desinstalas la PWA y se
+  eliminan sus datos, podrías perder el inventario.
+- En Ajustes usa «Descargar respaldo (.json)» al terminar el día.
+- En otro dispositivo puedes cargar el respaldo, pero reemplaza todos
+  sus datos actuales. No combina inventarios.
+- Nunca publiques el respaldo .json en GitHub u otro lugar público.
+- El sistema anterior en Python usa SQLite y no se importa de forma
+  automática aquí. Hay que migrar los productos por separado.
+- El lector de cámara funciona si BarcodeDetector es compatible con
+  tu Android/Chrome; siempre existe ingreso manual de códigos.
+- La app no produce facturas fiscales CFDI ni cobra tarjetas reales:
+  solo REGISTRA cómo pagó el cliente.
+- La protección de datos, acceso por contraseña, sincronización en
+  tiempo real y facturación requieren un sistema adicional.

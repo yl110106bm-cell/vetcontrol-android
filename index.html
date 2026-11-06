@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0f766e">
+  <meta name="description" content="Inventario y ventas de productos veterinarios">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="style.css">
+  <title>VetControl · Inventario y ventas</title>
+</head>
+<body>
+  <header class="topbar"><div class="brand"><span class="logo">🐾</span><div><strong>VetControl</strong><small>Inventario y ventas veterinarias</small></div></div><span id="storageLabel" class="storage">Guardado local</span></header>
+  <nav class="tabs" aria-label="Navegación principal">
+    <button data-page="inicio" class="active">🏠 <span>Inicio</span></button>
+    <button data-page="productos">📦 <span>Productos</span></button>
+    <button data-page="ventas">🛒 <span>Vender</span></button>
+    <button data-page="historial">🧾 <span>Historial</span></button>
+    <button data-page="ajustes">⚙️ <span>Ajustes</span></button>
+  </nav>
+  <main class="container">
+    <section class="page active" id="page-inicio">
+      <h1>Resumen de tu veterinaria</h1><p class="muted">Todos los importes están expresados en pesos mexicanos (MXN).</p>
+      <div class="stats">
+        <article><small>Productos registrados</small><strong id="statProducts">0</strong></article>
+        <article><small>Unidades disponibles</small><strong id="statUnits">0</strong></article>
+        <article><small>Valor de venta del stock</small><strong id="statValue">$0.00</strong></article>
+        <article><small>Ventas de hoy</small><strong id="statToday">$0.00</strong></article>
+      </div>
+      <section class="panel"><h2>Alertas <span id="alertCount" class="count">0</span></h2><div class="helper">Caducidad en los próximos 30 días, productos vencidos, agotados y existencias bajas.</div><div id="alerts" class="cards"></div></section>
+      <section class="panel"><h2>Accesos rápidos</h2><div class="actions"><button class="primary" data-go="productos" data-add="1">+ Agregar producto</button><button data-go="ventas">Registrar venta</button></div></section>
+    </section>
+    <section class="page" id="page-productos">
+      <div class="heading"><div><h1>Productos</h1><p class="muted">Medicamentos, vacunas, alimentos y accesorios.</p></div><button class="primary" id="addProduct">+ Nuevo</button></div>
+      <div class="panel"><label for="productSearch">Buscar por nombre, código, lote o categoría</label><div class="searchline"><input id="productSearch" placeholder="Ej. antipulgas o 750123..." autocomplete="off"><button type="button" id="scanProduct" title="Escanear con la cámara">📷</button></div><div class="filterrow"><label for="productFilter">Mostrar</label><select id="productFilter"><option value="all">Todos</option><option value="low">Pocas existencias</option><option value="expired">Caducados</option><option value="soon">Próximos a caducar</option><option value="out">Agotados</option></select></div></div>
+      <div id="productList" class="cards"></div>
+    </section>
+    <section class="page" id="page-ventas">
+      <h1>Realizar venta</h1><div class="panel"><label for="saleSearch">Buscar producto o ingresar código de barras</label><div class="searchline"><input id="saleSearch" placeholder="Nombre o código de barras" autocomplete="off"><button id="scanSale" type="button" title="Escanear producto">📷</button></div><div class="helper">Los productos caducados, agotados o sin fecha válida no pueden venderse.</div><div id="saleMatches" class="cards compact"></div></div>
+      <div class="panel"><h2>Carrito</h2><div id="cartLines"></div><div class="total"><span>Total</span><strong id="cartTotal">$0.00</strong></div>
+        <div class="formgrid"><label>Cliente (opcional)<input id="customer" maxlength="100" placeholder="Público general"></label><label>Método de pago<select id="payment"><option>Efectivo</option><option>Tarjeta</option><option>Transferencia</option></select></label><label id="cashField">Efectivo recibido<input id="cashReceived" type="number" step="0.01" min="0" placeholder="0.00" inputmode="decimal"></label></div>
+        <p id="changeLine" class="muted"></p><button class="primary full" id="finishSale">Cobrar y guardar venta</button>
+      </div>
+    </section>
+    <section class="page" id="page-historial"><h1>Historial</h1><div class="panel"><div class="filterrow"><label for="historyType">Ver</label><select id="historyType"><option value="sales">Ventas</option><option value="movements">Entradas y salidas</option></select></div><div id="historyList" class="cards"></div></div></section>
+    <section class="page" id="page-ajustes"><h1>Ajustes y respaldo</h1><div class="panel"><h2>Tus datos</h2><p>Los datos se guardan <strong>en este dispositivo y navegador</strong>. No se sincronizan automáticamente con una computadora u otro teléfono.</p><div class="actions"><button id="exportJson" class="primary">Descargar respaldo (.json)</button><button id="exportProducts">Exportar productos (.csv)</button><button id="exportSales">Exportar ventas (.csv)</button></div><hr><label for="importJson">Restaurar respaldo JSON (reemplaza todos los datos actuales)</label><input id="importJson" type="file" accept=".json,application/json"><p class="helper">Haz respaldos frecuentes y consérvalos fuera del teléfono. La eliminación de datos del navegador puede borrar el inventario.</p></div><div class="panel"><h2>Instalar en Android</h2><p>Abre la aplicación desde una dirección HTTPS en Chrome, toca ⋮ y selecciona <strong>Agregar a pantalla principal</strong> o <strong>Instalar aplicación</strong>.</p><button id="installBtn" hidden>Instalar aplicación</button></div></section>
+  </main>
+  <dialog id="productDialog"><form id="productForm" class="dialogbody"><div class="dialoghead"><h2 id="productFormTitle">Nuevo producto</h2><button type="button" id="closeProduct" aria-label="Cerrar">✕</button></div><input type="hidden" id="prodId"><div class="formgrid">
+    <label>Nombre del producto *<input id="prodName" required maxlength="120"></label>
+    <label>Código de barras<input id="prodBarcode" maxlength="80" placeholder="Opcional"></label>
+    <label>Categoría<select id="prodCategory"><option>Medicamento</option><option>Vacuna</option><option>Desparasitante</option><option>Alimento</option><option>Accesorio</option><option>Higiene</option><option>Otro</option></select></label>
+    <label>Especie<select id="prodSpecies"><option>Todas</option><option>Perro</option><option>Gato</option><option>Perro / Gato</option><option>Ave</option><option>Equino</option><option>Bovino</option><option>Porcino</option><option>Otra</option></select></label>
+    <label>Presentación<input id="prodPresentation" maxlength="80" placeholder="Tabletas, frasco, bolsa..."></label>
+    <label>Número de lote<input id="prodLot" maxlength="80"></label>
+    <label>Caducidad<input id="prodExpiry" type="date"><span class="helper">Para productos sin caducidad, deja vacío.</span></label>
+    <label>Existencia mínima *<input id="prodMin" type="number" min="0" step="1" required value="5" inputmode="numeric"></label>
+    <label>Costo unitario (MXN) *<input id="prodCost" type="number" min="0" step="0.01" required value="0" inputmode="decimal"></label>
+    <label>Precio de venta (MXN) *<input id="prodPrice" type="number" min="0" step="0.01" required value="0" inputmode="decimal"></label>
+    <label id="initialStockLabel">Cantidad inicial *<input id="prodStock" type="number" min="0" step="1" required value="0" inputmode="numeric"><span class="helper">Después modifica existencias con entradas y salidas.</span></label>
+  </div><div class="actions bottom"><button type="button" id="cancelProduct">Cancelar</button><button type="submit" class="primary">Guardar producto</button></div></form></dialog>
+  <dialog id="moveDialog"><form id="moveForm" class="dialogbody"><div class="dialoghead"><h2>Registrar movimiento</h2><button type="button" id="closeMove">✕</button></div><p id="moveProductName"></p><input type="hidden" id="moveProdId"><label>Tipo<select id="moveType"><option value="entrada">Entrada (+)</option><option value="salida">Salida (-)</option></select></label><label>Cantidad *<input id="moveQty" type="number" min="1" step="1" required inputmode="numeric"></label><label>Motivo<input id="moveReason" maxlength="160" placeholder="Compra, merma, ajuste..."></label><div class="actions bottom"><button type="button" id="cancelMove">Cancelar</button><button type="submit" class="primary">Guardar movimiento</button></div></form></dialog>
+  <dialog id="scanDialog"><div class="dialogbody"><div class="dialoghead"><h2>Escanear código</h2><button id="closeScan" type="button">✕</button></div><video id="camera" autoplay muted playsinline></video><p id="scanInfo" class="muted">Apunta al código de barras con la cámara.</p><button type="button" id="stopScan" class="full">Cerrar cámara</button></div></dialog>
+  <dialog id="receiptDialog"><div class="dialogbody"><div class="dialoghead"><h2>Venta guardada</h2><button id="closeReceipt" type="button">✕</button></div><div id="receiptContent"></div><div class="actions"><button id="printReceipt" class="primary">Imprimir / guardar PDF</button><button id="receiptDone">Cerrar</button></div></div></dialog>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js" defer></script>
+</body></html>
